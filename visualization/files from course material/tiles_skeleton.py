@@ -111,7 +111,7 @@ if __name__ == "__main__":
 
 
     cv2.destroyAllWindows()
-
-   # market.write_image("supermarket.png")
+    
+    market.write_image("supermarket_map.png")
 
 # %%
