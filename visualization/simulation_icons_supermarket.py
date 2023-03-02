@@ -4,11 +4,32 @@ import pandas as pd
 import cv2
 import random
 import time
+from PIL import Image
 #%%
+############# CONSTANTS
 minutes_simulation = 60 * 15
 new_customer = 1.6 # lambda of poisson distribution
 states = ['fruit', 'spices', 'dairy', 'drinks', 'checkout']
 prob = pd.read_csv('probabilities.csv', index_col=0)
+
+############## TEXT DESIGN
+# Write some Text for the title
+font                   = cv2.FONT_HERSHEY_TRIPLEX
+bottomLeftCornerOfText = (5,450)
+fontScale              = 1
+fontColor              = (255, 0, 127)
+thickness              = 1
+lineType               = 2
+
+# Write some Text for the data
+font2                   = cv2.FONT_HERSHEY_SIMPLEX
+bottomLeftCornerOfText2 = (5,490)
+fontScale2              = 0.5
+fontColor2              = (0, 0, 0)
+thickness2              = 1
+lineType2               = 2
+
+################ SUPERMARKET MAP
 
 # size of a tile (32*32 pixels = 1 tile)
 TILE_SIZE = 32               
@@ -26,7 +47,7 @@ MARKET ="""
 ##..CC..CC..CC...#
 ##..CC..CC..CC...#
 ##...............#
-##XX##########EE##
+#########XX###EE##
 """.strip()
 
 
@@ -61,19 +82,21 @@ class SupermarketMap:
         elif char == "Z":
             return self.extract_tile(0, 4)
         elif char == "C":
-            return self.extract_tile(5, 3)
+            return self.extract_tile(8, 3)
         elif char == "D":
             return self.extract_tile(3, 13)
         elif char == "E":
-            return self.extract_tile(7, 3)
+            return self.extract_tile(8, 7)
         elif char == "S":
             return self.extract_tile(5, 8)     
         elif char == "V":
             return self.extract_tile(2, 11)        
         elif char == "X":
-            return self.extract_tile(6, 10)
+            return self.extract_tile(8, 14)
         else:
             return self.extract_tile(1, 2)
+
+           
         
     def prepare_map(self):
         """prepares the entire image as a big numpy array"""
@@ -95,6 +118,8 @@ class SupermarketMap:
         cv2.imwrite(filename, self.image)
 
 
+################# CUSTOMER CLASS
+  
 class Customer: 
     """
     Customer class that models the customer behavior in a supermarket.
@@ -152,6 +177,7 @@ class Customer:
         """formats as CSV"""
         return f"{self.id}, {self.location}"
 
+################ SUPERMARKET CLASS
 
 class Supermarket:
     """This class controls the list of Customer instances that are currently in the supermarket (customer.active = True)."""
@@ -205,23 +231,62 @@ class Supermarket:
         row = str(self) + ', ' + str(customer)
         print(row)
 
+    def get_text(self):
+        """write text in the image"""
+        return cv2.putText(frame, f"""Time: {self.get_time} Number of customers in the supermarket {self.n_customers}""",
+                           bottomLeftCornerOfText2, 
+                           font2, 
+                           fontScale2,fontColor2,
+                           thickness2,
+                           lineType2)
+    
+    
     def __repr__(self):
         """formats as CSV"""
         return f"{self.get_time}, {self.name}, {self.n_customers}"
 
+#######GIF
+
+# gif = Image.open("images/output.gif")
+#     # Convert the animated GIF to a list of frames
+# frames = []
+# try:
+#     while True:
+#         frames.append(gif.copy())
+#         gif.seek(len(frames))
+# except EOFError:
+#     pass
+
+#     # Display the frames using OpenCV
+# for frame in frames:
+#     # Convert the frame to a numpy array
+#     frame_np = cv2.cvtColor(np.array(frame), cv2.COLOR_RGB2BGR)
+
+# # Calculate the position of the GIF
+#     gif_height, gif_width, _ = gif.shape
+#     gif_x = (700 - gif_width) // 2
+#     gif_y = 490 + 20  # Add some space between the text and the GIF
+
+#     # Add the GIF to the frame
+#     frame[gif_y:gif_y+gif_height, gif_x:gif_x+gif_width] = gif
+
+############# ANIMATION 
 
 if __name__ == "__main__":
 
-    background = np.zeros((500, 700, 3), np.uint8)
-    tiles = cv2.imread("tiles.png")
-    
-    # Instantiating a TilesMap object 
+    background = np.ones((700, 600, 3), np.uint8)
+    background = 255 * background
+    tiles = cv2.imread("images/tiles_new.png")
+
+ # Instantiating a TilesMap object 
     map = SupermarketMap(MARKET, tiles)
 
     avatar = tiles[3*TILE_SIZE:4*TILE_SIZE,1*TILE_SIZE:2*TILE_SIZE] # pacman = client
+
      
     # Instantiating a Customer and Supermarket object 
     supermarket = Supermarket("NonStopShopper") 
+
 
     for i in range(minutes_simulation):
         frame = background.copy()
@@ -231,6 +296,7 @@ if __name__ == "__main__":
         supermarket.next_minute()
         supermarket.add_new_customers()
         supermarket.remove_existing_customers()
+        supermarket.get_text()
         time.sleep(0.5)
 
 
@@ -238,10 +304,20 @@ if __name__ == "__main__":
         key = cv2.waitKey(1)
         if key == 113: # 'q' key
             break
+        
+        cv2.putText(frame,'NonStopShopper!', 
+                    bottomLeftCornerOfText, 
+                    font, 
+                    fontScale,
+                    fontColor,
+                    thickness,
+                    lineType) 
     
+
         cv2.imshow("frame", frame)
+        #cv2.imshow("gif", frame_np)
 
     cv2.destroyAllWindows()
     
-    supermarket.write_image("NonStopShopper.png")
+    map.write_image("test.png")
 # %%
