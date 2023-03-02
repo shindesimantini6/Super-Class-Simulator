@@ -2,10 +2,21 @@
 from nonstopshopper import Customer
 import pandas as pd
 from faker import Faker
+import random
 import pandas as pd
+import numpy as np 
 
 # Read the state transition probabilities
 transition_pro = pd.read_csv('./probabilities.csv')
+
+new_customer = 1.6 # lambda of poisson distribution
+
+# # Create a DataFrame for time probabilities
+# # initialize list of lists
+# data = [['7:01', 2], ['7:03', 15], ['juli', 14]]
+  
+# # Create the pandas DataFrame
+# df = pd.DataFrame(data, columns=['Name', 'Age'])
 
 class Supermarket:
     """
@@ -52,6 +63,10 @@ class Supermarket:
 
         return self.get_time() != self.closing_time
 
+    def n_customers(self):
+        '''Returns the number of customers in the supermarket'''
+        return len(self.customers)
+
     def get_time(self):
         """
         Current time in HH:MM format.
@@ -84,25 +99,29 @@ class Supermarket:
             row (list): List of values of timestamp, customer id, customer name, and customer state (location)
         
         """
+
+        # Create an empty list to store all values
+        final_states = []
+
         print(self.customers)        
         # Loop through the customers list to extract the name, id, state (location) and timestamp of the customer
         for customer in self.customers:
+            print (customer)
             name = customer.name
-            id_ =   self.last_id
+            id_ =   customer.id
             time = self.get_time()
             location = customer.state
+            no_cust = self.n_customers()
             
             print(f"Customer name {name} with {id_} came to the store at {time} at {location}")
 
-            # Store the headers in a list
-            headers = ['time','id_', 'name', 'location']  # Should we not hard code this ?
-            print(headers)
-
             # Store the customer attributes in a list
-            row = [time, id_, name, location]
+            row = [time, id_, name, location, no_cust]
             print(row)
 
-            return headers, row
+            # Append the customers to the list
+            final_states.append(row)
+        return final_states
 
     def next_minute(self):
         """
@@ -112,7 +131,7 @@ class Supermarket:
         
         """
 
-        print(self.customers)
+        #print(self.customers)
 
         # Increase the minute by 1
         self.minutes = self.minutes + 1
@@ -126,28 +145,36 @@ class Supermarket:
         Randomly creates new customers and gives them a fake name and adds to their id in an increading order of one.
         
         """
+        # Get the timestamp of the Customer
+        self.time = self.get_time()
+
+        # Randomly decide number of customers per timestamp 
+        number_per_timestamp = np.random.poisson(new_customer)
+        print(number_per_timestamp)
 
         # Instantiate faker
         f = Faker()
 
-        # Create a variable with fake names
-        cust_name = f.name()
-
         # Hard code a budget 
         budget = 100 # maybe we don't need this
 
-        # Increase the id by one for each customer added
-        self.last_id += 1
+        for n in range(number_per_timestamp):
+            print(n)
 
-        # Instantiate the Customer class
-        customer = Customer(cust_name, budget)
+            # Increase the id by one for each customer added
+            self.last_id += 1
 
-        # Get the timestamp of the Customer
-        self.time = self.get_time()
+            # Create a variable with fake names
+            cust_name = f.name()
 
-        # Append the customers list with the customer
-        self.customers.append(customer)
-        print(self.customers)
+            # Instantiate the Customer class
+            customer = Customer(self.last_id, cust_name, budget)
+            print(customer)
+
+            # Append the customers list with the customer
+            self.customers.append(customer)
+        
+        # print(self.customers)
 
     def remove_exitsting_customers(self):
         """

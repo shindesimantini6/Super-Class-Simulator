@@ -31,12 +31,13 @@ class Customer:
     A single customer that moves through the supermarket
     in a MCMC simulation
     """
-    def __init__(self, name, budget):#Write a constructor
+    def __init__(self, cust_id, name, budget):#Write a constructor
 
         """
         Instantiates a number of objects required in the Customer class.
 
         """
+        self.id = cust_id
         self.name = name  # Customer name
         self.state = "entrance"  # Default initial state (location) as entrance
         self.budget = budget  # Budget of the customer
@@ -90,3 +91,5 @@ class Customer:
 
 # # print(cust1)
 # # %%
+
+# %%
