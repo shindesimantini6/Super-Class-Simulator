@@ -102,6 +102,11 @@ class Supermarket:
 
         # Create an empty list to store all values
         final_states = []
+        # fruits_state = []
+        # spices_state = []
+        # checkout_state = []
+        # drinks_state = []
+        # dairy_state = []
 
         print(self.customers)        
         # Loop through the customers list to extract the name, id, state (location) and timestamp of the customer
@@ -119,9 +124,25 @@ class Supermarket:
             row = [time, id_, name, location, no_cust]
             print(row)
 
+
             # Append the customers to the list
             final_states.append(row)
         return final_states
+        #     if location == "fruit":
+        #         fruits_state.append(location)
+        #     elif location == "spices":
+        #         spices_state.append(location)
+        #     elif location == "dairy":
+        #         dairy_state.append(location)
+        #     elif location == "checkout":
+        #         checkout_state.append(location)
+        #     else:
+        #         drinks_state.append(location)
+            
+        #     # Append the customers to the list
+        #     final_states.append(row)
+            
+        # return final_states, fruits_state, spices_state, checkout_state, dairy_state, drinks_state
 
     def next_minute(self):
         """
