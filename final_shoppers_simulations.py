@@ -10,7 +10,44 @@ from PIL import Image
 from create_charts import create_charts
 from create_charts import create_folder
 import imageio
+from argparse import ArgumentParser
+
 #%%
+# It parses the command line
+parser = ArgumentParser(description="User-friendly command line interface")
+
+parser.add_argument(
+    "supermarket_name",
+    help="write your supermarket name"
+)
+
+parser.add_argument(
+    "opening_time",
+    help="write the opening time of the supermarket (remember its an integer)"
+)
+
+parser.add_argument(
+    "closing_time",
+    help="write the opening time of the supermarket (remember its a string)",
+)
+
+parser.add_argument(
+    "poisson_lambda_function",
+    help="write the lambda required to run the Poisson distribution for customers",
+)
+
+
+# It maps the user  inputs to the arguments
+#print(parser.parse_args())
+user_inputs = parser.parse_args()
+print(user_inputs)
+
+# Here we extracts the user inputs
+supermarket_name = user_inputs.supermarket_name
+opening_time = user_inputs.opening_time
+closing_time = user_inputs.closing_time
+poisson_lambda_function = user_inputs.poisson_lambda_function
+
 
 def add_element_and_get_index(element, element_list):
     """
@@ -84,7 +121,8 @@ lineType2               = 2
 supermarket_map = SupermarketMap(MARKET, tiles)
 
 # Instantiate the Supermarket object
-Tahini_supermarket = Supermarket("NonStopShopper!", 7, "08:08:00", 1.6) # Can change the time based on user
+Tahini_supermarket = Supermarket(supermarket_name, opening_time, closing_time, poisson_lambda_function) # Can change the time based on user
+#Tahini_supermarket = Supermarket("NonStopShopper!", 7, "08:08:00", 1.6) # Can change the time based on user
 print(Tahini_supermarket.name)
 
 # Size of a tile (32*32 pixels = 1 tile)
@@ -180,4 +218,37 @@ for value_time in time_list:
     images.append(imageio.imread(filename))
 
 imageio.mimsave('output_final.gif', images, fps=1)
+
+# It parses the command line
+parser = ArgumentParser(description="User-friendly command line interface")
+
+parser.add_argument(
+    "name",
+    help="write your name"
+)
+
+parser.add_argument(
+    "band",
+    help="write your beloved band"
+)
+
+parser.add_argument(
+    "--song",
+    "-s",
+    default=[False],
+    help="write the lyrics you want to scrape",
+    nargs="*"
+)
+
+
+# It maps the user  inputs to the arguments
+#print(parser.parse_args())
+user_inputs = parser.parse_args()
+print(user_inputs)
+
+# Here we extracts the user inputs
+user_name = user_inputs.name
+band_name = user_inputs.band
+songs = user_inputs.song
+
 # %%
