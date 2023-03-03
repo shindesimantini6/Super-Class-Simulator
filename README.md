@@ -6,7 +6,9 @@ We are creating a fantastic supermarket customer analysis based on Markov Chain 
 
 
 
-![output](https://user-images.githubusercontent.com/121929719/222553436-c82d2a47-9762-4923-8093-1d379ef5426e.gif)
+![output_final](https://user-images.githubusercontent.com/121929719/222722433-5e0df4dd-b142-4419-b8be-75a3ccdcd451.gif)
+
+
 
 # Collaborators
 
