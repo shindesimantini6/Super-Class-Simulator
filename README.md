@@ -9,7 +9,8 @@ The simulations add Customers to the simulation based on a Poissonian randomness
 ![markov](https://user-images.githubusercontent.com/79316344/222726610-cdb7407d-8036-4e11-acb8-bc0f006f57ab.png)
 
 ### Supermarket Simulation
-## TO DO: ADD gif
+
+![output_final](https://user-images.githubusercontent.com/121929719/222722433-5e0df4dd-b142-4419-b8be-75a3ccdcd451.gif)
 
 ### Requirements
 
