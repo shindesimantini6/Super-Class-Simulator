@@ -4,7 +4,7 @@ from supermarket import Supermarket
 import csv
 import cv2
 import numpy as np
-from SupermarketMap import SupermarketMap
+from supermarketmap import SupermarketMap
 import time
 from PIL import Image
 from create_charts import create_charts
