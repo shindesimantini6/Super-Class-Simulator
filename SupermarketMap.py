@@ -99,17 +99,17 @@ class SupermarketMap:
         elif char == "Z":
             return self.extract_tile(0, 4)
         elif char == "C":
-            return self.extract_tile(5, 3)
+            return self.extract_tile(8, 3)
         elif char == "D":
             return self.extract_tile(3, 13)
         elif char == "E":
-            return self.extract_tile(7, 3)
+            return self.extract_tile(8, 7)
         elif char == "S":
             return self.extract_tile(5, 8)     
         elif char == "V":
             return self.extract_tile(2, 11)        
         elif char == "X":
-            return self.extract_tile(6, 10)
+            return self.extract_tile(8, 14)
         else:
             return self.extract_tile(1, 2)
         
