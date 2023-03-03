@@ -8,6 +8,7 @@ from SupermarketMap import SupermarketMap
 import time
 from PIL import Image
 from create_charts import create_charts
+from create_charts import create_folder
 
 # represantation of the market with one symbol '#', '.', 'b' or similar for each tile on the png-file
 MARKET ="""
@@ -25,12 +26,17 @@ MARKET ="""
 ##########XX##EE##
 """.strip()
 
+# Path where the file has to be saved
+parent_directory =  './images'
+chart_directory = 'charts_customers'
+filepath = create_folder(parent_directory, chart_directory)
+
 # Define the background of the gif
 background = np.ones((1000, 730, 3), np.uint8)
 background = 255 * background
 
 # Read the tiles png
-tiles = cv2.imread("./Images/tiles_new.png")
+tiles = cv2.imread("./images/tiles_new.png")
 
 # TEXT DESIGN: Write some Text for the title
 font                   = cv2.FONT_HERSHEY_TRIPLEX
@@ -52,7 +58,7 @@ lineType2               = 2
 supermarket_map = SupermarketMap(MARKET, tiles)
 
 # Instantiate the Supermarket object
-Tahini_supermarket = Supermarket("Amazing Tahini", 7, "21:08:00", 1.6) # Can change the time based on user
+Tahini_supermarket = Supermarket("Amazing Tahini", 7, "07:08:00", 1.6) # Can change the time based on user
 print(Tahini_supermarket.name)
 
 # Size of a tile (32*32 pixels = 1 tile)
@@ -92,12 +98,11 @@ with open (f"final_shoppers.csv", "w", encoding = 'UTF8', newline="") as f:
         Tahini_supermarket.get_text(frame, bottomLeftCornerOfText2, font2, fontScale2, fontColor2,thickness2, lineType2)
         current_time = Tahini_supermarket.get_time()
         print(current_time)
+        time.sleep(0.5)
 
-        if final_customers != None:
+        if len(final_customers) != 0:
             # Create chart for current time
             create_charts(final_customers, headers, current_time)
-
-            time.sleep(0.5)
 
             # TO DO: Need comments here
             key = cv2.waitKey(1)
@@ -112,7 +117,7 @@ with open (f"final_shoppers.csv", "w", encoding = 'UTF8', newline="") as f:
                 thickness,
                 lineType) 
             
-            smallImage = cv2.imread(f"./Images/charts_customers/customer_{current_time}.png") #50x50 for you
+            smallImage = cv2.imread(f"./images/charts_customers/customer_{current_time}.png") #50x50 for you
             height, width, channels = smallImage.shape
             image_x = (700 - width) // 2
             image_y = 480 + 20  # Add some space between the text and the GIF

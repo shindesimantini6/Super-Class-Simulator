@@ -3,10 +3,41 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
+
+#%%
+# path_name = 'charts_customers'
+# os.mkdir(path_name)
+
+#%%
+
+def create_folder(parent_directory, chart_directory):
+    """
+    Creates a folder in the desired filepath. 
+
+    Args: 
+        path_name(str): Filepath of the to be created folder.
+
+    """
+    
+    # Create a empty directory to store the images if it doesn't exist
+    charts_path = os.path.join(parent_directory, chart_directory)
+    if not os.path.exists(charts_path):
+        os.makedirs(charts_path)
 
 #%%
 
 def create_charts(data, headers, current_time):
+    """
+    Creates charts for each timestamp and saves them in a folder created.
+
+    Args:
+        data(list): List of all values for timestamp, customer id, customer name, location
+            and customer numbers for that timestamp.
+        current_time(str): Current time of the Customers movement
+
+    """
+    
     # Read csv into a pandas dataframe
     final_shopper_list = pd.DataFrame(data,columns=headers)
 
@@ -19,13 +50,4 @@ def create_charts(data, headers, current_time):
     plt.ylim(top=12)
     plt.ylabel('Customer count')
     plt.xlabel('Supermarket section')
-    plt.savefig(f'./Images/charts_customers/customer_{current_time}.png') 
-    # plt.show();
-
-# # %%
-
-# headers = ['time','id_', 'name', 'location', 'no_customer_at_timestamp']
-# data = [['07:08:00', 2, 'Bonnie Richards', 'drinks', 10], ['07:08:00', 4, 'Derek Hernandez', 'checkout', 10], ['07:08:00', 5, 'Ariel Edwards', 'drinks', 10], ['07:08:00', 6, 'Dr. Luke Ochoa', 'dairy', 10], ['07:08:00', 7, 'Sarah Williamson', 'fruit', 10], ['07:08:00', 9, 'Monica Ballard', 'checkout', 10], ['07:08:00', 11, 'Terry Young', 'checkout', 10], ['07:08:00', 13, 'Kristine Smith', 'fruit', 10], ['07:08:00', 14, 'Marcus Ferguson', 'dairy', 10], ['07:08:00', 15, 'Joshua Durham', 'drinks', 10]]
-
-# pd.DataFrame(data,columns=headers)
-# %%
+    plt.savefig(f'./images/charts_customers/customer_{current_time}.png') 
