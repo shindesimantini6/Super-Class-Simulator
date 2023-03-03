@@ -52,7 +52,7 @@ lineType2               = 2
 supermarket_map = SupermarketMap(MARKET, tiles)
 
 # Instantiate the Supermarket object
-Tahini_supermarket = Supermarket("Amazing Tahini", 7, "08:08:00", 1.6) # Can change the time based on user
+Tahini_supermarket = Supermarket("Amazing Tahini", 7, "21:08:00", 1.6) # Can change the time based on user
 print(Tahini_supermarket.name)
 
 # Size of a tile (32*32 pixels = 1 tile)
@@ -129,3 +129,5 @@ with open (f"final_shoppers.csv", "w", encoding = 'UTF8', newline="") as f:
     # TO DO:Need comment here
     supermarket_map.write_image("NonStopShopper.png")
     f.close
+
+# %%
