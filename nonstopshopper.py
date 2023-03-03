@@ -11,10 +11,6 @@
 # 6. Time vs Customers entry probabilities (additional probability in the movement)
 
 #%%
-# import pandas as pd
-# transition_pro = pd.read_csv('./probabilities.csv')
-
-#%%
 
 # Import all required packages
 import random
@@ -22,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 # Read the transition probabilities
-transition_pro = pd.read_csv('./probabilities.csv')
+transition_pro = pd.read_csv('./input_data/probabilities.csv')
 
 # size of a tile (32*32 pixels = 1 tile)
 TILE_SIZE = 32
@@ -32,8 +28,14 @@ class Customer:
     """
     A single customer that moves through the supermarket
     in a MCMC simulation
+
+    Args:
+        cust_id(int): id of the Customer
+        name(str): Name of the Customer
+        budget(int): Budget of the Customer
     """
-    def __init__(self, cust_id, name, budget):#, map, avatar):#Write a constructor
+
+    def __init__(self, cust_id, name, budget, avatar):#Write a constructor
 
         """
         Instantiates a number of objects required in the Customer class.
@@ -43,53 +45,58 @@ class Customer:
         self.name = name  # Customer name
         self.state = "entrance"  # Default initial state (location) as entrance
         self.budget = budget  # Budget of the customer
-        # self.map =map
-        # self.avatar = avatar
+        self.avatar = avatar  # Avatar for the Customer
     
     def __repr__(self):  #The method __repr__() is called whenever an object is converted to a string (e.g. by print).
         return f'<Customer {self.name} in {self.state}>'
 
     def draw(self, frame):
-        '''# places the customer-object onto the map'''
+        """
+        Places the customer-object onto the map
+
+        """
+
         x = 11 * TILE_SIZE
         y = random.randint(12,15) * TILE_SIZE
         frame[x:x+TILE_SIZE, y:y+TILE_SIZE] = self.avatar
 
-    def next_state(self):
-        '''
+    def next_state(self, frame):
+        """
         Propagates the customer to the next state based on the probabilities defined in transition_pro.
+
+        Args:
+            frame(matrix): Background image.
 
         Returns:
             state(str) : State (location) is the next state (location) of the customer.
 
-        '''
+        """
         
         print(f"Initial state of the {self.name} {self.state}")
 
         # Extract the probabilites defined for the initial state (locaiton)
         prob = transition_pro.loc[transition_pro["location"] == self.state].loc[:, transition_pro.columns != 'location'].values
-        # print(prob)
 
         # Reassign the class state with the probabilites
         self.state = np.random.choice(['checkout', 'dairy', 'drinks', 'fruit', 'spices'], p = prob[0])
         print(f"Next State of the {self.name} {self.state}")
 
-        # if self.location == 'fruit':
-        #     x = TILE_SIZE * random.randint(2,6)
-        #     y = TILE_SIZE * random.randint(14,15)
-        # elif self.location == 'spices':
-        #     x = TILE_SIZE * random.randint(2,6)
-        #     y = TILE_SIZE * random.randint(10,11) 
-        # elif self.location == 'dairy':
-        #     x = TILE_SIZE * random.randint(2,6)
-        #     y = TILE_SIZE * random.randint(6,7)
-        # elif self.location == 'drinks':
-        #     x = TILE_SIZE * random.randint(2,6)
-        #     y = TILE_SIZE * random.randint(2,3)
-        # else:
-        #     x = TILE_SIZE * random.randint(8,9)
-        #     y = TILE_SIZE * random.randint(4,7)
-        # frame[x:x+TILE_SIZE, y:y+TILE_SIZE] = self.avatar
+        if self.state == 'fruit':
+            x = TILE_SIZE * random.randint(2,6)
+            y = TILE_SIZE * random.randint(14,15)
+        elif self.state == 'spices':
+            x = TILE_SIZE * random.randint(2,6)
+            y = TILE_SIZE * random.randint(10,11) 
+        elif self.state == 'dairy':
+            x = TILE_SIZE * random.randint(2,6)
+            y = TILE_SIZE * random.randint(6,7)
+        elif self.state == 'drinks':
+            x = TILE_SIZE * random.randint(2,6)
+            y = TILE_SIZE * random.randint(2,3)
+        else:
+            x = TILE_SIZE * random.randint(8,9)
+            y = TILE_SIZE * random.randint(4,7)
+        frame[x:x+TILE_SIZE, y:y+TILE_SIZE] = self.avatar
         
         return self.state
 

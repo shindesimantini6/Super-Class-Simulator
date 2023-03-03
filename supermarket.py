@@ -1,32 +1,23 @@
 # Import all required packages
 from nonstopshopper import Customer
-import pandas as pd
 from faker import Faker
-import random
 import pandas as pd
 import numpy as np 
-
-# Read the state transition probabilities
-transition_pro = pd.read_csv('./probabilities.csv')
-
-new_customer = 1.6 # lambda of poisson distribution
-
-# # Create a DataFrame for time probabilities
-# # initialize list of lists
-# data = [['7:01', 2], ['7:03', 15], ['juli', 14]]
-  
-# # Create the pandas DataFrame
-# df = pd.DataFrame(data, columns=['Name', 'Age'])
+import cv2
 
 class Supermarket:
     """
     Manages multiple Customer instances that are currently in the market.
+
     Args:
         name (str): Name of the Supermarket
+        opening_time (int): Opening time of the Supermarket
+        closing_time (str): Closing time of the Supermarket
+        poisson_lambda (int): Lambda required to run the Poisson distribution for customers
 
     """
 
-    def __init__(self, supermarket_name, opening_time, closing_time):
+    def __init__(self, supermarket_name, opening_time, closing_time, poisson_lambda):
         """
         Instantiates a number of objects required in the Supermarket class.
 
@@ -39,11 +30,14 @@ class Supermarket:
         self.name = supermarket_name  # Name of the Supermarket
         self.opening_time = opening_time # Opening time of the store
         self.closing_time = closing_time # Closing time of the store
+        self.poisson_lambda = poisson_lambda
 
     def __repr__(self):
         """
         Returns a print statement for the start of the Day!!
+
         """
+
         return 'The day in the Supermarket has started'
 
     def is_open(self):
@@ -64,7 +58,10 @@ class Supermarket:
         return self.get_time() != self.closing_time
 
     def n_customers(self):
-        '''Returns the number of customers in the supermarket'''
+        """
+        Returns the number of customers in the supermarket
+        """
+        
         return len(self.customers)
 
     def get_time(self):
@@ -86,7 +83,7 @@ class Supermarket:
         minutes = self.minutes % 60
 
         # Create a string formatted timestamp from the hour and minutes
-        timestamp = f"{hour:02d}:{minutes:02d}"
+        timestamp = f"{hour:02d}:{minutes:02d}:00"
         print(timestamp)
         return timestamp
 
@@ -102,16 +99,12 @@ class Supermarket:
 
         # Create an empty list to store all values
         final_states = []
-        # fruits_state = []
-        # spices_state = []
-        # checkout_state = []
-        # drinks_state = []
-        # dairy_state = []
 
-        print(self.customers)        
+        print(self.customers)  # Check the current customers in the Supermarket
+
         # Loop through the customers list to extract the name, id, state (location) and timestamp of the customer
         for customer in self.customers:
-            print (customer)
+            print(customer)
             name = customer.name
             id_ =   customer.id
             time = self.get_time()
@@ -128,49 +121,38 @@ class Supermarket:
             # Append the customers to the list
             final_states.append(row)
         return final_states
-        #     if location == "fruit":
-        #         fruits_state.append(location)
-        #     elif location == "spices":
-        #         spices_state.append(location)
-        #     elif location == "dairy":
-        #         dairy_state.append(location)
-        #     elif location == "checkout":
-        #         checkout_state.append(location)
-        #     else:
-        #         drinks_state.append(location)
-            
-        #     # Append the customers to the list
-        #     final_states.append(row)
-            
-        # return final_states, fruits_state, spices_state, checkout_state, dairy_state, drinks_state
 
-    def next_minute(self):
+    def next_minute(self,frame):
         """
         Propagates all customers to the next state.
         Extends the minutes by 1 and runs the next_state function from Customer class to 
         define the next state of the customer.
         
+        Args:
+            frame(matrix): Background image. # @Crista Please check
         """
-
-        #print(self.customers)
 
         # Increase the minute by 1
         self.minutes = self.minutes + 1
 
         # Loop through the existing customers and find their next state (location)
         for customer in self.customers:
-            customer.next_state()
+            customer.next_state(frame)
             
-    def add_new_customers(self):
+    def add_new_customers(self, avatar):
         """
-        Randomly creates new customers and gives them a fake name and adds to their id in an increading order of one.
+        Randomly creates new customers and gives them a fake name and adds to 
+        their id in an increading order of one.
+
+        Args:    
+            avatar(image): Icon used as customers
         
         """
         # Get the timestamp of the Customer
         self.time = self.get_time()
 
         # Randomly decide number of customers per timestamp 
-        number_per_timestamp = np.random.poisson(new_customer)
+        number_per_timestamp = np.random.poisson(self.poisson_lambda)
         print(number_per_timestamp)
 
         # Instantiate faker
@@ -189,14 +171,12 @@ class Supermarket:
             cust_name = f.name()
 
             # Instantiate the Customer class
-            customer = Customer(self.last_id, cust_name, budget)
+            customer = Customer(self.last_id, cust_name, budget, avatar)
             print(customer)
 
             # Append the customers list with the customer
             self.customers.append(customer)
         
-        # print(self.customers)
-
     def remove_exitsting_customers(self):
         """
         Removes every customer that is not active any more.
@@ -212,6 +192,19 @@ class Supermarket:
                 print(self.customers)
                 continue
 
+    def get_text(self, frame, bottomLeftCornerOfText2, font2, fontScale2, fontColor2,thickness2, lineType2):
+        """
+        Write text in the image
+        
+        """
+        
+        return cv2.putText(frame, f"""Time: {self.get_time()} Number of customers in the supermarket {self.n_customers()}""",
+                            bottomLeftCornerOfText2, 
+                            font2, 
+                            fontScale2,fontColor2,
+                            thickness2,
+                            lineType2)
+        
 
 # TEST:
 # if __name__ == "__main__":
