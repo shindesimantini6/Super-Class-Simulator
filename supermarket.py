@@ -4,7 +4,7 @@ from faker import Faker
 import pandas as pd
 import numpy as np 
 import cv2
-
+#%%
 class Supermarket:
     """
     Manages multiple Customer instances that are currently in the market.
@@ -229,3 +229,5 @@ class Supermarket:
 #                 writer.writerow(row)
 #             else:
 #                 continue
+
+# %%
