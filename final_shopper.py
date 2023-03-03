@@ -22,7 +22,7 @@ MARKET ="""
 ##..CC..CC..CC...#
 ##..CC..CC..CC...#
 ##...............#
-##XX##########EE##
+##########XX##EE##
 """.strip()
 
 # Define the background of the gif
